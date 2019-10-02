@@ -22,11 +22,11 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
      // 연관관계의 주인이 아님을 JPA에게 알려줍니다.
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>(); //컬렉션은 필드에서 바로 초기화 하는것이 안전함. null문제에서도 안전하다.
 
-    //OneToOne도 디폴트로 패치전략이 EAGER이기 때문에 LAZY로 전략 설정이 필요함.
-    @OneToOne(fetch = FetchType.LAZY)
+    //OneToOne도 디폴트로 패치전략이 EAGER이기 때문에 LAZY로 전략 설정이 필요함. xToOne은 디폴트로 EAGER 이다.
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -34,5 +34,22 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문상태 [ ORDER, CANCEL ]
+
+    //연관관계 편의 메소드
+    public void setMember(Member member){
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItems(OrderItem orderItems) {
+        this.orderItems.add(orderItems);
+        orderItems.setOrder(this);
+    }
+
+    public void setDeivery(Delivery deivery){
+        this.delivery = deivery;
+        deivery.setOrder(this);
+    }
+
 
 }

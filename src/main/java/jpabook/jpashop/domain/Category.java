@@ -35,4 +35,11 @@ public class Category {
     //OneToMany는 기본적으로 LAZY가 디폴트이기 때문에 바꿔줄 필요는 없다.
     @OneToMany(mappedBy = "parent")
     private List<Category> child = new ArrayList<>();
+
+    // 연관관계 편의 메소드
+    public void addChildCategory(Category child){
+        this.child.add(child);
+        child.setParent(parent);
+    }
+
 }
