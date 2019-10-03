@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,7 +32,7 @@ public class MemberServiceTest {
     @Rollback
 
     @Test
-    public void 회원가입() throws Exception{
+    public void 회원가입() throws Exception {
         //given
         Member member = new Member();
         member.setName("kim");
@@ -40,12 +41,12 @@ public class MemberServiceTest {
         Long saveId = memberService.join(member);
         System.out.println("saveId: " + saveId);
 
-        em.flush(); // 실제로 쓰기 지연 sql 저장소에 있는 insert 쿼리를 DB에 전송하지만 @Transactional로 인해서 롤백되기 때문에 반영이 안됩니다.
+        //em.flush(); // 실제로 쓰기 지연 sql 저장소에 있는 insert 쿼리를 DB에 전송하지만 @Transactional로 인해서 롤백되기 때문에 반영이 안됩니다.
         //then
         assertEquals(member, memberRepository.findOne(saveId));
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void 즁복_회원_예외() throws Exception {
 
         //given
@@ -56,13 +57,18 @@ public class MemberServiceTest {
         member2.setName("kim");
 
 
+        //when
         memberService.join(member1);
         memberService.join(member2); // 예외가 발생해야 한다.
 
-        //when
-
+      /*  try {
+        } catch (IllegalStateException e) {
+            return;
+        }
+*/
         //then
-     }
+        fail("예외가 발생해야 한다.");
+    }
 
 
 }
