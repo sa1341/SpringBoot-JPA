@@ -1,6 +1,6 @@
 package jpabook.jpashop.repository;
 
-import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.domain.item.Items;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ public class ItemRepository {
 
     private final EntityManager em;
 
-    public void save(Item item){
+    public void save(Items item){
         if(item.getId() == null){
             em.persist(item);
         }else {
@@ -21,12 +21,12 @@ public class ItemRepository {
         }
     }
 
-    public Item findOne(Long id){
-        return em.find(Item.class, id);
+    public Items findOne(Long id){
+        return em.find(Items.class, id);
     }
 
-    public List<Item> findAll(){
-        return em.createQuery("select i from Item i", Item.class)
+    public List<Items> findAll(){
+        return em.createQuery("select i from Items i", Items.class)
                 .getResultList();
     }
 

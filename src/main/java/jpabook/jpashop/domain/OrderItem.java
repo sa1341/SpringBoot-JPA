@@ -1,10 +1,11 @@
 package jpabook.jpashop.domain;
 
-import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.domain.item.Items;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 import javax.persistence.*;
 
@@ -20,7 +21,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
-    private Item item;
+    private Items items;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -32,9 +33,9 @@ public class OrderItem {
 
 
     //==생성 메서드 ==//
-    public static OrderItem createOrderItem(Item item, int orderPrice, int count){
+    public static OrderItem createOrderItem(Items item, int orderPrice, int count){
         OrderItem orderItem = new OrderItem();
-        orderItem.setItem(item);
+        orderItem.setItems(item);
         orderItem.setOrderPrice(orderPrice);
         orderItem.setCount(count);
 
@@ -45,7 +46,7 @@ public class OrderItem {
 
     //==비즈니스 로직==//
     public void cancel(){
-        getItem().addStockQuantity(count);
+        getItems().addStockQuantity(count);
     }
 
     /**

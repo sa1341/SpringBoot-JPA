@@ -1,7 +1,7 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.item.Book;
-import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.domain.item.Items;
 import jpabook.jpashop.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,6 @@ public class ItemController {
     private final ItemService itemService;
 
 
-
     @GetMapping("/items/new")
     public String createForm(Model model){
         model.addAttribute("form", new BookForm());
@@ -36,7 +35,6 @@ public class ItemController {
         book.setAuthor(form.getAuthor());
         book.setIsbn(form.getIsbn());
 
-
         itemService.saveItem(book);
 
         return "redirect:/";
@@ -44,9 +42,8 @@ public class ItemController {
 
     @GetMapping("/items")
     public String list(Model model){
-        List<Item> items = itemService.findItems();
+        List<Items> items = itemService.findItems();
         model.addAttribute("items", items);
-
         return "items/itemList";
     }
 
@@ -54,7 +51,6 @@ public class ItemController {
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model model){
 
         Book item = (Book) itemService.findOne(itemId);
-
         BookForm form = new BookForm();
         form.setId(item.getId());
         form.setName(item.getName());
@@ -70,10 +66,13 @@ public class ItemController {
 
 
     @PostMapping("items/{itemId}/edit")
-    public String updateItem(@ModelAttribute("form") BookForm form){
+    public String updateItem(@PathVariable Long itemId,@ModelAttribute("form") BookForm form){
 
-        // 준영속 상태
-        Book book = new Book();
+
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
+
+        // 준영속 상태 < - 변경감지를 쓰는게
+        /*   Book book = new Book();
         book.setId(form.getId());
         book.setName(form.getName());
         book.setPrice(form.getPrice());
@@ -81,7 +80,7 @@ public class ItemController {
         book.setAuthor(form.getAuthor());
         book.setIsbn(form.getIsbn());
 
-        itemService.saveItem(book);
+        itemService.saveItem(book);*/
 
         return "redirect:/items";
 

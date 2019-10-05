@@ -1,6 +1,6 @@
 package jpabook.jpashop.domain;
 
-import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.domain.item.Items;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +26,7 @@ public class Category {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id")
     )
-    private List<Item> items = new ArrayList<>();
+    private List<Items> items = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
