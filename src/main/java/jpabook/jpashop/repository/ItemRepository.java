@@ -13,23 +13,22 @@ public class ItemRepository {
 
     private final EntityManager em;
 
-    public void save(Items item){
-        if(item.getId() == null){
+    public void save(Items item) {
+        if (item.getId() == null) {
             em.persist(item);
-        }else {
+        } else {
             em.merge(item);
         }
     }
 
-    public Items findOne(Long id){
+    public Items findOne(Long id) {
         return em.find(Items.class, id);
     }
 
-    public List<Items> findAll(){
+    public List<Items> findAll() {
         return em.createQuery("select i from Items i", Items.class)
                 .getResultList();
     }
-
 
 
 }

@@ -13,7 +13,8 @@ import java.util.List;
 @Setter
 public class Category {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "category_id")
     private Long id;
 
@@ -37,7 +38,7 @@ public class Category {
     private List<Category> child = new ArrayList<>();
 
     // 연관관계 편의 메소드
-    public void addChildCategory(Category child){
+    public void addChildCategory(Category child) {
         this.child.add(child);
         child.setParent(parent);
     }

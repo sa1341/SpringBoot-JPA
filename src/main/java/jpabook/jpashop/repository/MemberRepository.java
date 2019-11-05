@@ -18,23 +18,23 @@ public class MemberRepository {
     // 스프링 데이터 JPA가 지원해줍니다.
     private final EntityManager em;
 
-    public void save(Member member){
+    public void save(Member member) {
         em.persist(member);
     }
 
-    public Member findOne(Long id){
+    public Member findOne(Long id) {
         return em.find(Member.class, id); // 단건 조회
     }
 
 
-    public List<Member> findAll(){
+    public List<Member> findAll() {
         return em.createQuery("select m from Member m", Member.class) // sql로 번역된다. 엔티티를 대상으로 쿼리를 만들어야됨.
                 .getResultList();
     }
 
-    public List<Member> findByName(String name){
-      return em.createQuery("select m from Member m where m.name = :name", Member.class)
-              .setParameter("name", name).getResultList();
+    public List<Member> findByName(String name) {
+        return em.createQuery("select m from Member m where m.name = :name", Member.class)
+                .setParameter("name", name).getResultList();
     }
 
 }

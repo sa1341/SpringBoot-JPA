@@ -28,7 +28,7 @@ public class OrderService {
      * 주문
      */
     @Transactional
-    public Long order(Long memberId, Long ItemId, int count){
+    public Long order(Long memberId, Long ItemId, int count) {
 
         //엔티티 조회
         Member member = memberRepository.findOne(memberId);
@@ -55,7 +55,7 @@ public class OrderService {
      * 주문 취소
      */
     @Transactional
-    public void cancelOrder(Long orderId){
+    public void cancelOrder(Long orderId) {
         // 주문 엔티티 조회
         Order order = orderRepository.findOne(orderId);
 
@@ -64,12 +64,10 @@ public class OrderService {
     }
 
 
-
     //검색
-    public List<Order> findOrders(OrderSearch orderSearch){
+    public List<Order> findOrders(OrderSearch orderSearch) {
         return orderRepository.findAllByString(orderSearch);
     }
-
 
 
 }

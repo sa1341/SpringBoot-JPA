@@ -15,13 +15,13 @@ public class ItemUpdateTest {
 
     @Autowired
     EntityManager em;
-    
+
 
     @Test
     public void updateTest() throws Exception {
-                
+
         Book book = em.find(Book.class, 1L);
-        
+
         // TX
         book.setName("객체지향과 디자인 패턴");
 
@@ -30,7 +30,6 @@ public class ItemUpdateTest {
         //TX END
 
 
-
-     }
+    }
 
 }

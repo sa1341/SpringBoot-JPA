@@ -15,7 +15,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 생성자의 접근제어를 protected로 설정하면 외부에서 생성자를 통해서 객체생성 불가함... 유지보수를 위한 큰그림
 public class OrderItem {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "order_item_id")
     private Long id;
 
@@ -33,7 +34,7 @@ public class OrderItem {
 
 
     //==생성 메서드 ==//
-    public static OrderItem createOrderItem(Items item, int orderPrice, int count){
+    public static OrderItem createOrderItem(Items item, int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();
         orderItem.setItems(item);
         orderItem.setOrderPrice(orderPrice);
@@ -45,18 +46,17 @@ public class OrderItem {
 
 
     //==비즈니스 로직==//
-    public void cancel(){
+    public void cancel() {
         getItems().addStockQuantity(count);
     }
 
     /**
-     *  주문상품 전체 가격 조회
+     * 주문상품 전체 가격 조회
      */
     //==조회 로직==//
-    public int getTotalPrice(){
+    public int getTotalPrice() {
         return getOrderPrice() * getCount();
     }
-
 
 
 }
