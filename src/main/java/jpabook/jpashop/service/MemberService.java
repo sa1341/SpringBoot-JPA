@@ -33,6 +33,13 @@ public class MemberService {
         }
     }
 
+    //회원 정보 수정 api
+    //리턴타입을 Member로 하면 커멘드(update)랑 쿼리(조회)가 동시에 존재하기 때문에 분리하는게 좋은 정책입니다.
+    @Transactional
+    public void updateMember(Long id, String name) {
+        Member findMember = memberRepository.findOne(id);
+        findMember.setName(name);
+    }
 
     //회원 전체 조회
     public List<Member> findMembers() {

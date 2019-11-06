@@ -2,13 +2,13 @@ package jpabook.jpashop.api;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jpabook.jpashop.vo.CreateMemberRequest;
+import jpabook.jpashop.vo.CreateMemberResponse;
+import jpabook.jpashop.vo.UpdateMemberRequest;
+import jpabook.jpashop.vo.UpdateMemberResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -41,25 +41,14 @@ public class MemberApiController {
         return new CreateMemberResponse(id);
     }
 
-    @Data
-    @NoArgsConstructor
-    public static class CreateMemberRequest{
 
-        private String name;
+    @PutMapping("/api/v2/members/{id}")
+    public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id, @RequestBody @Valid UpdateMemberRequest updateMemberRequest){
 
-        public CreateMemberRequest(String name) {
-            this.name = name;
-        }
+        memberService.updateMember(id, updateMemberRequest.getName());
+        Member findMember = memberService.findOne(id);
+        return new UpdateMemberResponse(findMember.getId(), findMember.getName());
     }
 
-
-    @Data
-    public static class CreateMemberResponse{
-        private Long id;
-
-        public CreateMemberResponse(Long id) {
-            this.id = id;
-        }
-    }
 
 }
