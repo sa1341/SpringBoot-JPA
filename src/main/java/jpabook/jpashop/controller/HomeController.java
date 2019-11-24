@@ -22,4 +22,15 @@ public class HomeController {
     }
 
 
+    @GetMapping("/loginForm")
+    public void loginForm(){
+        log.info("loginForm!!");
+    }
+
+
+    @GetMapping("/index")
+    public void index(){
+        log.info("index!!");
+    }
+
 }

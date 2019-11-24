@@ -24,10 +24,13 @@ public class Order {
     @GeneratedValue
     @Column(name = "order_id")
     private Long id;
+
+    // 실제로 지연로딩이기 때문에 Member 엔티티를 생성을 안하고 상속받은 프록시 객체를 하이버네이트가 생성해줍니다. ByteBuddyInterceptor 객체가 생성됩니다.
     //@ManyToOne은 기본적으로 패치 전략이 EAGER이기 때문에.. 반드시 실무에서는 LAZY로 설정을 해줘야한다. 안그러면 N + + 1 문제가 발생한다.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
     // 연관관계의 주인이 아님을 JPA에게 알려줍니다.
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>(); //컬렉션은 필드에서 바로 초기화 하는것이 안전함. null문제에서도 안전하다.
