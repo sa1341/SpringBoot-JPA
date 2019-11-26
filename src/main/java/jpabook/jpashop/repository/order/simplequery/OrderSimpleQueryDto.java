@@ -1,4 +1,4 @@
-package jpabook.jpashop.vo;
+package jpabook.jpashop.repository.order.simplequery;
 
 
 import jpabook.jpashop.domain.Address;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SimpleOrderDto {
+public class OrderSimpleQueryDto {
 
     private Long orderId;
     private String name;
@@ -22,7 +22,15 @@ public class SimpleOrderDto {
     private Address address;
 
 
-    public SimpleOrderDto(Order order) {
+    public OrderSimpleQueryDto(Long orderId, String name, LocalDateTime orderDate, OrderStatus orderStatus, Address address) {
+        this.orderId = orderId;
+        this.name = name;                 // LAZY 초기화
+        this.orderDate = orderDate;
+        this.orderStatus = orderStatus;
+        this.address = address;              // LAZY 초기화
+    }
+
+    public OrderSimpleQueryDto(Order order) {
 
         this.orderId = order.getId();
         this.name = order.getMember().getName(); // LAZY 초기화
@@ -30,4 +38,6 @@ public class SimpleOrderDto {
         this.orderStatus = order.getStatus();
         address = order.getDelivery().getAddress(); // LAZY 초기화
     }
+
+
 }

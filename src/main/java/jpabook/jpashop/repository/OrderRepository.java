@@ -97,6 +97,19 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+
+
+    // 지연로딩을 무시하고 한번에 다 가져오는 쿼리. 프록시조차 무시하고 진짜 엔티티를 가져옵니다.
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        ).getResultList();
+    }
+
+
+
 }
 
 
