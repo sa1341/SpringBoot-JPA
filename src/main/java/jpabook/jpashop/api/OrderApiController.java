@@ -41,6 +41,20 @@ public class OrderApiController {
                 .collect(Collectors.toList());
 
         return  collect;
+
     }
+
+
+    // v2와 사실 코드가 바뀐게 없지만 repositoty의 JPQL 메소드를 어떻게 구현하느냐에 따라 데이터베이스에 전송되는 쿼리수를 줄이므로써 성능을 높일 수 있습니다.
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> odersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return  collect;
+    }
+
     
 }

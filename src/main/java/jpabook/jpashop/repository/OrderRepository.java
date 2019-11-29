@@ -108,8 +108,21 @@ public class OrderRepository {
         ).getResultList();
     }
 
+    public List<Order> findAllWithItem() {
 
-
+         // DB 쿼리를 날릴때 distinct를 키워드를 넣어서 날립니다.
+        // ditstinct는 실제 DB 로우가 완전히 같지 않는 이상 먹히지 않기 때문에 결과는 달라지지 않지만 애플리케이션단에서 식별자 값을 기준으로 중복을 제거해서 collection에 넣어줍니다.
+        // 컬렉션 페치조인을 사용하면  페이징 처리가 불가능합니다. 또한 컬렉션 페치 조인은 1개만 사용할 수 있습니다.
+        return em.createQuery(
+                "select distinct o from Order o" +
+                " join fetch o.member m" +
+                " join fetch o.delivery d" +
+                " join fetch o.orderItems oi" +
+                " join fetch oi.items i", Order.class
+        )       .setFirstResult(1) // offset 1번 인덱스부터 가져옴... 그런데 현재 Order 엔티티가 테이블에 2건밖에 없기 때문에 결국 한개를 가져옵니다.
+                .setMaxResults(100) // limit 100개를 가져옴  HHH000104: firstResult/maxResults specified with collection fetch; applying in memory!
+                .getResultList();
+    }
 }
 
 
