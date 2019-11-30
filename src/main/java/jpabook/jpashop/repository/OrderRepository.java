@@ -97,8 +97,6 @@ public class OrderRepository {
         return query.getResultList();
     }
 
-
-
     // 지연로딩을 무시하고 한번에 다 가져오는 쿼리. 프록시조차 무시하고 진짜 엔티티를 가져옵니다.
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
@@ -107,6 +105,21 @@ public class OrderRepository {
                         " join fetch o.delivery d", Order.class
         ).getResultList();
     }
+
+
+    //default_batch_fetch_size 크기만큼 in 쿼리의 파라미터로 추가가 되기 때문에 지연 로딩 성능이 향상되어서 컬렉션 패치를 페이징 처리하는데 더 성능이 좋습니다.
+    //default_batch_fetch_size을 사용하면 1 + N + N -> 1 + 1 + 1로 됩니다.
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        )       .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+
 
     public List<Order> findAllWithItem() {
 

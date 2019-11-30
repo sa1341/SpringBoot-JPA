@@ -7,6 +7,7 @@ import jpabook.jpashop.repository.OrderSearch;
 import jpabook.jpashop.vo.OrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -56,5 +57,20 @@ public class OrderApiController {
         return  collect;
     }
 
-    
+
+    // offset은 몇번째 row부터 출력할 지를 결정합니다. 1번째 row이면 0입니다.
+    // 네트워크 호출 수가 많냐.... 데이터베이스 데이터 전송량 사이에 trade off를 해야합니다.
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> odersV3_page(@RequestParam(value = "offset", defaultValue = "0") int offset,
+                                       @RequestParam(value = "limit", defaultValue = "100") int limit) {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset,limit);
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return  collect;
+    }
+
+
+
 }
