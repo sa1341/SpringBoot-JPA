@@ -2,6 +2,7 @@ package jpabook.jpashop.repository.order.query;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -48,7 +49,6 @@ public class OrderQueryRepository {
         // 주문, 회원, 배송 엔티티 join한 결과를 OrderQueryDto 타입을 가지고 있는 컬렉션 List 객체 반환
         List<OrderQueryDto> result = findOrders();
         // orderItem을 최적화로 조회하기 위해서 OrderQueryDto가 가지고 있는 order_id들을 List 객체로 반환
-
         Map<Long, List<OrderItemQueryDto>> orderItemMap = findOrderItemMap(toOrderIds(result));
 
         result.forEach(o -> o.setOrderItems(orderItemMap.get(o.getOrderId())));
@@ -72,5 +72,16 @@ public class OrderQueryRepository {
         return result.stream()
                     .map(o -> o.getOrderId())
                     .collect(Collectors.toList());
+    }
+
+    public List<OrderFlatDto> findAllByDto_flat() {
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count)" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d" +
+                        " join o.orderItems oi" +
+                        " join oi.items i", OrderFlatDto.class)
+                .getResultList();
     }
 }
