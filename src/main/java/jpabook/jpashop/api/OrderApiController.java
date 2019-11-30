@@ -81,4 +81,9 @@ public class OrderApiController {
     }
 
 
+    //orderQueryRepository는 도메인을 이용하여 핵심 비즈니스 로직을 처리하지 않기 때문에 repository 디렉토리와 별도로 분리하였습니다.
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> odersV5() {
+        return orderQueryRepository.findAllByDto_optimization();
+    }
 }
