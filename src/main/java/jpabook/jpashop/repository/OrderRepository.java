@@ -1,7 +1,9 @@
 package jpabook.jpashop.repository;
 
-import jpabook.jpashop.domain.Member;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -106,6 +108,36 @@ public class OrderRepository {
         ).getResultList();
     }
 
+    public List<Order> findAll(OrderSearch orderSearch){
+
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+
+
+
+        return query.select(order)
+              .from(order)
+              .join(order.member, member)
+              .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+              .limit(1000)
+              .fetch();
+
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if(!StringUtils.hasText(memberName)){
+            return null;
+        }
+        return QMember.member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond){
+        if(statusCond == null){
+            return null;
+        }
+        return QOrder.order.status.eq(statusCond);
+    }
 
     //default_batch_fetch_size 크기만큼 in 쿼리의 파라미터로 추가가 되기 때문에 지연 로딩 성능이 향상되어서 컬렉션 패치를 페이징 처리하는데 더 성능이 좋습니다.
     //default_batch_fetch_size을 사용하면 1 + N + N -> 1 + 1 + 1로 됩니다.
@@ -132,7 +164,7 @@ public class OrderRepository {
                 " join fetch o.delivery d" +
                 " join fetch o.orderItems oi" +
                 " join fetch oi.items i", Order.class
-        )       .setFirstResult(1) // offset 1번 인덱스부터 가져옴... 그런데 현재 Order 엔티티가 테이블에 2건밖에 없기 때문에 결국 한개를 가져옵니다.
+        )       .setFirstResult(0) // offset 1번 인덱스부터 가져옴... 그런데 현재 Order 엔티티가 테이블에 2건밖에 없기 때문에 결국 한개를 가져옵니다.
                 .setMaxResults(100) // limit 100개를 가져옴  HHH000104: firstResult/maxResults specified with collection fetch; applying in memory!
                 .getResultList();
     }
