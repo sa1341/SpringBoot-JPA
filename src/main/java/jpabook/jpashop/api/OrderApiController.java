@@ -8,6 +8,7 @@ import jpabook.jpashop.repository.order.query.OrderFlatDto;
 import jpabook.jpashop.repository.order.query.OrderItemQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
+import jpabook.jpashop.service.query.OrderQueryService;
 import jpabook.jpashop.vo.OrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -25,6 +25,8 @@ public class OrderApiController {
     
     private final OrderRepository orderRepository;
     private final OrderQueryRepository orderQueryRepository;
+    private final OrderQueryService orderQueryService;
+
 
     // v1은 도메인을 외부에 노출하는 api로써 지연로딩으로 설정한 연관관계는 조회할때 로딩하지 않고 프록시로 반환하기 때문에 json으로 렌더링할때 강제로 프록시 초기화를 해줘야 됩니다.
     // 마찬가지로 프록시를 초기화하면 해당 연관관계를 가진 엔티티를 데이터베이스에서 죄회하기 때문에 조회 쿼리가 1 + N + N 만큼 나오기 때문에 절대로 이렇게 쓰지 말기....
@@ -59,12 +61,7 @@ public class OrderApiController {
     // 단점은 컬렉션 패치이기 때문에 페이징 처리가 불가능합니다. 그리고 일대다 조인이 포함되기 때문에 데이터베이스에서 중복로우를 반환하기 때문에 메모리에서 하이버네이트가 distinct를 이용해서 중복을 제거해야합니다.
     @GetMapping("/api/v3/orders")
     public List<OrderDto> odersV3() {
-        List<Order> orders = orderRepository.findAllWithItem();
-        List<OrderDto> collect = orders.stream()
-                .map(o -> new OrderDto(o))
-                .collect(toList());
-
-        return  collect;
+         return orderQueryService.odersV3();
     }
 
 
